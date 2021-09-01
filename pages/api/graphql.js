@@ -1,9 +1,20 @@
 import { ApolloServer, gql } from 'apollo-server-micro'
-import {NextApiRequest, NextApiResponse} from 'next'
+import { db } from '../../database'
+import User from '../../models/User'
+
+db()
 
 const typeDefs = gql`
+
+  type User {
+    id: ID!
+    name: String
+    gender: String
+  }
   type Query {
     sayHello: String
+    getUsers: [User]
+    getUser(id: ID!): User
   }
 `
 
@@ -12,6 +23,13 @@ const resolvers = {
     sayHello(parent, args, context) {
       return 'Hello World!'
     },
+    getUsers: async() => { 
+      const users = await User.find({})
+      if(!users){
+        throw new Error("No users found")
+      }
+      return users
+    }
   },
 }
 
@@ -23,15 +41,4 @@ export const config = {
 const apolloServer = new ApolloServer({ typeDefs, resolvers })
 await apolloServer.start()
 
-export default apolloServer.createHandler({ path: '/api/graphql' }) //server.start().then(() => server.createHandler());
-
-
-
-// export default async function handler(req: NextApiRequest, res: NextApiResponse){
-  
-//   const apolloServer = new ApolloServer({ typeDefs, resolvers })
-//   await apolloServer.start()
-//   apolloServer.createHandler({ path: '/api/graphql' })
-
-//   // res.status(200).json({hello: "world"})
-// }
+export default apolloServer.createHandler({ path: '/api/graphql' }) 
