@@ -17,6 +17,7 @@
     "apollo-server-micro": "^3.3.0",
     "graphql": "^15.5.2",
     "micro": "^9.3.4",
+    "micro-cors": "^0.1.1",
     "mongodb": "^4.1.1",
     "mongoose": "^6.0.3",
     "next": "^11.1.2",
